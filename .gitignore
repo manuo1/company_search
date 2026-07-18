@@ -1,0 +1,15 @@
+# --- Environnement Python ---
+venv/
+__pycache__/
+*.pyc
+
+# --- Config personnelle (contient la localisation) ---
+src/config_local.py
+
+# --- Données volumineuses (téléchargées depuis data.gouv.fr, voir README) ---
+data_from_data.gouv/*.parquet
+data_from_data.gouv/*.zip
+data_from_data.gouv/*.csv
+
+# --- Résultats de recherche personnels ---
+output/*.csv
