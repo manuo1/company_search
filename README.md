@@ -71,11 +71,37 @@ SEUIL_MIN_EFFECTIF = 50    # nombre de salariés minimum
 
 ## 3. Lancer la recherche
 
+### Option A — via `run.sh` (recommandé)
+
+```bash
+./run.sh
+```
+
+Ce script crée le venv si besoin, installe/met à jour les dépendances,
+et crée `src/config_local.py` depuis le template s'il n'existe pas
+encore — dans ce cas il s'arrête avec un message pour vous inviter à
+l'éditer avant de relancer.
+
+### Option B — manuellement
+
 ```bash
 python main.py
 ```
 
-Le résultat est écrit dans `output/entreprises_selectionnees.csv`
+Avant toute recherche, le script vérifie automatiquement les 3
+fichiers Sirene (présence, format parquet valide, colonnes attendues).
+En cas de problème, un message `[ERREUR]` indique précisément quoi
+corriger (où re-télécharger, quel bouton chercher, comment renommer).
+Un avertissement `[ATTENTION]` (non bloquant) apparaît aussi si un
+fichier a plus de 45 jours, les exports Insee étant mensuels.
+
+Le résultat est écrit dans `output/`, avec un nom reflétant les
+critères de recherche et la date de génération, par exemple :
+
+```
+entreprises_Chateauneuf_sur_Cher_50km_eff50_2026-07-25.csv
+```
+
 (non versionné, propre à chaque recherche).
 
 ## Structure du projet
@@ -83,13 +109,15 @@ Le résultat est écrit dans `output/entreprises_selectionnees.csv`
 ```
 company_search/
 ├── data_from_data.gouv/   # fichiers Sirene (non versionnés, voir ci-dessus)
-├── output/                # résultats générés (non versionné)
+├── output/                # résultats générés (non versionnés)
 ├── src/
-│   ├── config.py               # chemins + config personnelle assemblée
+│   ├── config.py               # chemins + config personnelle + nom du fichier de sortie
 │   ├── config_local.py         # config personnelle (non versionné)
 │   ├── config_local.example.py # template de config personnelle
+│   ├── data_check.py           # validation des fichiers Sirene (présence/format/contenu)
 │   ├── geo.py                  # calcul de distance (Haversine, en SQL)
 │   ├── effectifs.py            # conversion seuil salariés -> codes Insee
 │   └── query.py                # construction et exécution de la requête DuckDB
+├── run.sh                 # setup venv + config + lancement
 └── main.py
 ```
